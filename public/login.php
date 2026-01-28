@@ -86,10 +86,13 @@ $csrfToken = CSRF::generateToken();
                 </button>
             </form>
             
+            <?php if ($_SERVER['SERVER_NAME'] === 'localhost' || strpos($_SERVER['SERVER_NAME'], '127.0.0.1') !== false): ?>
             <div class="text-center mt-2" style="color: var(--text-secondary); font-size: 12px;">
+                <p><strong>Modo Desarrollo</strong></p>
                 <p>Usuario por defecto: admin@registro-diario.local</p>
                 <p>Contraseña: admin123</p>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>

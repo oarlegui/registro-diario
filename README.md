@@ -184,7 +184,7 @@ Para crear nuevos usuarios, puede ejecutar el siguiente SQL en phpMyAdmin:
 
 ```sql
 INSERT INTO users (email, password, role) VALUES 
-('nuevo@email.com', PASSWORD_HASH_AQUI', 'user');
+('nuevo@email.com', 'YOUR_PASSWORD_HASH_HERE', 'user');
 ```
 
 Para generar un hash de contraseña, puede usar este código PHP:

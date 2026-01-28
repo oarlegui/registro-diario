@@ -1,0 +1,31 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# PHP
+*.log
+.phpunit.result.cache
+
+# Environment specific
+config/database.local.php
+
+# Session files
+sessions/
+
+# Temporary files
+tmp/
+temp/
+
+# Node modules (if using any frontend build tools in future)
+node_modules/
+
+# Backup files
+*.bak
+*.backup

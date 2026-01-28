@@ -1,23 +1,16 @@
 <?php
 /**
- * Database Configuration
+ * Database Configuration Example
  * 
- * This file contains database connection settings.
- * Update these values with your cPanel MySQL credentials.
+ * Copy this file to config/database.php and update with your cPanel credentials
  */
 
 // Database configuration - UPDATE THESE VALUES FOR YOUR cPANEL ENVIRONMENT
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'registro_diario');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', 'localhost');              // Usually 'localhost' in cPanel
+define('DB_NAME', 'your_database_name');     // Your database name
+define('DB_USER', 'your_mysql_username');    // Your MySQL username
+define('DB_PASS', 'your_mysql_password');    // Your MySQL password
 define('DB_CHARSET', 'utf8mb4');
-
-// Check if using default credentials
-if (DB_USER === 'root' && DB_PASS === '' && $_SERVER['SERVER_NAME'] !== 'localhost') {
-    error_log("WARNING: Using default database credentials in production!");
-    die("Database not configured. Please update config/database.php with your cPanel credentials.");
-}
 
 /**
  * Get database connection

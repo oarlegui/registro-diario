@@ -21,6 +21,11 @@ function initTabs() {
 }
 
 // Autocomplete functionality
+// Key codes for keyboard navigation
+const KEY_DOWN = 40;
+const KEY_UP = 38;
+const KEY_ENTER = 13;
+
 function initAutocomplete(inputElement, suggestionsUrl, minChars = 2) {
     let currentFocus = -1;
     
@@ -49,8 +54,11 @@ function initAutocomplete(inputElement, suggestionsUrl, minChars = 2) {
             
             suggestions.forEach(suggestion => {
                 const itemDiv = document.createElement('div');
-                itemDiv.innerHTML = suggestion.replace(
-                    new RegExp(value, 'gi'),
+                // Safely escape HTML to prevent XSS
+                const escapedSuggestion = escapeHtml(suggestion);
+                const escapedValue = escapeHtml(value);
+                itemDiv.innerHTML = escapedSuggestion.replace(
+                    new RegExp(escapedValue, 'gi'),
                     match => `<strong>${match}</strong>`
                 );
                 
@@ -71,15 +79,15 @@ function initAutocomplete(inputElement, suggestionsUrl, minChars = 2) {
         if (list) {
             let items = list.getElementsByTagName('div');
             
-            if (e.keyCode === 40) { // Down arrow
+            if (e.keyCode === KEY_DOWN) {
                 currentFocus++;
                 addActive(items);
                 e.preventDefault();
-            } else if (e.keyCode === 38) { // Up arrow
+            } else if (e.keyCode === KEY_UP) {
                 currentFocus--;
                 addActive(items);
                 e.preventDefault();
-            } else if (e.keyCode === 13) { // Enter
+            } else if (e.keyCode === KEY_ENTER) {
                 e.preventDefault();
                 if (currentFocus > -1 && items[currentFocus]) {
                     items[currentFocus].click();
@@ -273,6 +281,13 @@ async function updateExitTime(recordId, exitTime) {
     }
 }
 
+// Utility function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Load pending records
 async function loadPendingRecords() {
     try {
@@ -290,24 +305,32 @@ async function loadPendingRecords() {
         records.forEach(record => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${record.date}</td>
-                <td>${record.name}</td>
-                <td>${record.rut}</td>
-                <td>${record.company_name || '-'}</td>
-                <td>${record.classification}</td>
-                <td>${record.entry_time}</td>
+                <td>${escapeHtml(record.date)}</td>
+                <td>${escapeHtml(record.name)}</td>
+                <td>${escapeHtml(record.rut)}</td>
+                <td>${escapeHtml(record.company_name || '-')}</td>
+                <td>${escapeHtml(record.classification)}</td>
+                <td>${escapeHtml(record.entry_time)}</td>
                 <td>
-                    <input type="time" class="exit-time-input" data-record-id="${record.id}" value="">
+                    <input type="time" class="exit-time-input" data-record-id="${escapeHtml(record.id)}" value="">
                 </td>
-                <td>${record.license_plate || '-'}</td>
+                <td>${escapeHtml(record.license_plate || '-')}</td>
                 <td><span class="badge badge-pending">Pendiente</span></td>
                 <td>
-                    <button class="btn btn-success btn-sm" onclick="updateExitTimeForRecord(${record.id})">
+                    <button class="btn btn-success btn-sm update-exit-btn" data-record-id="${escapeHtml(record.id)}">
                         Actualizar
                     </button>
                 </td>
             `;
             tbody.appendChild(row);
+        });
+        
+        // Add event listeners to update buttons
+        document.querySelectorAll('.update-exit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const recordId = this.getAttribute('data-record-id');
+                updateExitTimeForRecord(recordId);
+            });
         });
     } catch (error) {
         console.error('Error loading pending records:', error);

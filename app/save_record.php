@@ -29,10 +29,19 @@ if (!CSRF::validateToken($csrfToken)) {
 }
 
 // Validate required fields
+$fieldLabels = [
+    'date' => 'Fecha',
+    'name' => 'Nombre',
+    'rut' => 'RUT',
+    'classification' => 'Clasificación',
+    'visit_reason' => 'Motivo de visita'
+];
+
 $requiredFields = ['date', 'name', 'rut', 'classification', 'visit_reason'];
 foreach ($requiredFields as $field) {
     if (empty($_POST[$field])) {
-        echo json_encode(['success' => false, 'message' => "El campo '$field' es requerido"]);
+        $label = $fieldLabels[$field] ?? $field;
+        echo json_encode(['success' => false, 'message' => "El campo '$label' es requerido"]);
         exit;
     }
 }

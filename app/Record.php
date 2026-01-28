@@ -135,7 +135,9 @@ class Record {
                 ORDER BY name 
                 LIMIT ?
             ");
-            $stmt->execute([$query . '%', $limit]);
+            $stmt->bindValue(1, $query . '%', PDO::PARAM_STR);
+            $stmt->bindValue(2, (int)$limit, PDO::PARAM_INT);
+            $stmt->execute();
             return array_column($stmt->fetchAll(), 'name');
         } catch (PDOException $e) {
             error_log("Error getting name suggestions: " . $e->getMessage());
@@ -160,7 +162,9 @@ class Record {
                 ORDER BY company_name 
                 LIMIT ?
             ");
-            $stmt->execute([$query . '%', $limit]);
+            $stmt->bindValue(1, $query . '%', PDO::PARAM_STR);
+            $stmt->bindValue(2, (int)$limit, PDO::PARAM_INT);
+            $stmt->execute();
             return array_column($stmt->fetchAll(), 'company_name');
         } catch (PDOException $e) {
             error_log("Error getting company suggestions: " . $e->getMessage());
@@ -197,9 +201,9 @@ class Record {
         
         $expectedVerifier = 11 - ($sum % 11);
         
-        if ($expectedVerifier == 11) {
+        if ($expectedVerifier === 11) {
             $expectedVerifier = '0';
-        } elseif ($expectedVerifier == 10) {
+        } elseif ($expectedVerifier === 10) {
             $expectedVerifier = 'K';
         } else {
             $expectedVerifier = strval($expectedVerifier);
