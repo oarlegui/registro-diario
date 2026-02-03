@@ -1,16 +1,29 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+session_start();
+
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../logs/php_error.log');
+
 /**
  * Main Dashboard - Registro Diario
  */
 
 require_once __DIR__ . '/../app/Auth.php';
-require_once __DIR__ . '/../app/CSRF.php';
 
-// Require authentication
+// Configurar la zona horaria
+date_default_timezone_set('America/Santiago');
+
+// Obtener la fecha actual
+$fechaHoy = date("Y-m-d");
+$horaActual = date("H:i:s");
+
+// Requerir autenticación
 Auth::requireLogin();
 
 $userEmail = Auth::getUserEmail();
-$csrfToken = CSRF::generateToken();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -43,8 +56,6 @@ $csrfToken = CSRF::generateToken();
                 <h2 class="card-title">Registro de Visita</h2>
                 
                 <form id="record-form" action="/app/save_record.php" method="POST">
-                    <?php echo CSRF::getTokenField(); ?>
-                    
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="date">Fecha *</label>
@@ -145,9 +156,6 @@ $csrfToken = CSRF::generateToken();
             </div>
         </div>
     </div>
-    
-    <!-- Hidden CSRF token for AJAX requests -->
-    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
     
     <script src="/public/js/app.js"></script>
 </body>

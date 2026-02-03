@@ -4,7 +4,6 @@
  */
 
 require_once __DIR__ . '/../app/Auth.php';
-require_once __DIR__ . '/../app/CSRF.php';
 
 // If already logged in, redirect to dashboard
 if (Auth::isLoggedIn()) {
@@ -18,12 +17,8 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    $csrfToken = $_POST['csrf_token'] ?? '';
     
-    // Validate CSRF token
-    if (!CSRF::validateToken($csrfToken)) {
-        $error = 'Token de seguridad inválido. Por favor, intente nuevamente.';
-    } elseif (empty($email) || empty($password)) {
+    if (empty($email) || empty($password)) {
         $error = 'Por favor, ingrese su email y contraseña.';
     } elseif (Auth::login($email, $password)) {
         header('Location: /public/index.php');
@@ -32,9 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Credenciales inválidas. Por favor, intente nuevamente.';
     }
 }
-
-// Generate CSRF token
-$csrfToken = CSRF::generateToken();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -57,8 +49,6 @@ $csrfToken = CSRF::generateToken();
             <?php endif; ?>
             
             <form method="POST" action="">
-                <?php echo CSRF::getTokenField(); ?>
-                
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input 

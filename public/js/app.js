@@ -259,7 +259,6 @@ async function updateExitTime(recordId, exitTime) {
         const formData = new FormData();
         formData.append('record_id', recordId);
         formData.append('exit_time', exitTime);
-        formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
         
         const response = await fetch('/app/update_exit_time.php', {
             method: 'POST',

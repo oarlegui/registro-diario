@@ -4,7 +4,6 @@
  */
 
 require_once __DIR__ . '/Auth.php';
-require_once __DIR__ . '/CSRF.php';
 require_once __DIR__ . '/Record.php';
 
 header('Content-Type: application/json');
@@ -18,13 +17,6 @@ if (!Auth::isLoggedIn()) {
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Método no permitido']);
-    exit;
-}
-
-// Validate CSRF token
-$csrfToken = $_POST['csrf_token'] ?? '';
-if (!CSRF::validateToken($csrfToken)) {
-    echo json_encode(['success' => false, 'message' => 'Token de seguridad inválido']);
     exit;
 }
 
